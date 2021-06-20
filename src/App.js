@@ -10,7 +10,12 @@ function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState([]);
 
+  const [q, setQ] = useState("");
+  //we are searching countries by name and capital
+  const [searchParam] = useState(["name", "capital"]);
+
   useEffect(() => {
+    // here we fetch our code
     fetch("https://restcountries.eu/rest/v2/all")
       .then((res) => res.json())
       .then(
@@ -27,6 +32,16 @@ function App() {
 
   console.log("the items are: ", items);
 
+  function search(items) {
+    return items.filter((item) => {
+      return searchParam.some((newItem) => {
+        return (
+          item[newItem].toString().toLowerCase().indexOf(q.toLowerCase()) > -1
+        );
+      });
+    });
+  }
+
   if (error) {
     return <>{error.message}</>;
   } else if (!isLoaded) {
@@ -38,8 +53,26 @@ function App() {
   } else {
     return (
       <div className="App">
+        <div className="search-wrapper">
+          <label htmlFor="search-form">
+            <Input
+              type="search"
+              name="search-form"
+              id="search-form"
+              className="search-input"
+              placeholder="Search for the countries"
+              value={q}
+              /*
+                                // set the value of our useState q
+                                //  anytime the user types in the search box
+                                */
+              onChange={(e) => setQ(e.target.value)}
+            />
+          </label>
+        </div>
+
         <Countries>
-          {items.map((item) => (
+          {search(items).map((item) => (
             <Card
               key={item.numericCode}
               img={item.flag}
@@ -91,5 +124,45 @@ const Countries = styled.div`
     display: grid;
     grid-template-columns: 200px;
     justify-content: center;
+  }
+`;
+const Input = styled.input`
+  @media (min-width: 1600px) {
+    padding: 25px;
+    width: 800px;
+    border-radius: 15px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  }
+  @media (min-width: 1200px) and (max-width: 1600px) {
+    padding: 20px;
+    width: 800px;
+    border-radius: 15px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  }
+
+  @media (max-width: 1200px) {
+    padding: 20px;
+    width: 600px;
+    border-radius: 15px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  }
+
+  @media (max-width: 800px) {
+    padding: 20px;
+    width: 450px;
+    border-radius: 15px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  }
+  @media (max-width: 500px) and (min-width: 400px) {
+    padding: 15px;
+    width: 300px;
+    border-radius: 10px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  }
+  @media (max-width: 400px) {
+    padding: 10px;
+    width: 200px;
+    border-radius: 10px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   }
 `;
