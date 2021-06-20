@@ -1,5 +1,5 @@
 import React from "react";
-import { CubeGrid, FoldingCube } from "better-react-spinkit";
+import { FoldingCube } from "better-react-spinkit";
 
 function Loading() {
   return (
